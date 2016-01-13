@@ -9,9 +9,9 @@ What we would like is to be able to use java programs like regular programs. I'v
 
 #How to use
 
-1.) Put a copy of runjava.exe in same directory as executable jar you wish to run
-2.) Rename runjava.exe to be the same name as the jar (minus the .exe/.jar part)
-3.) Put directory on path so you can run from any current directory
+ - Put a copy of runjava.exe in same directory as executable jar you wish to run
+ - Rename runjava.exe to be the same name as the jar (minus the .exe/.jar part)
+ -  Put directory on path so you can run from any current directory
 
 #Example
 
