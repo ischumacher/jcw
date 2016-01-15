@@ -20,7 +20,9 @@ int wmain(int argc, wchar_t **argv) {
 	commandLine.append(name);
 	commandLine.append(L".jar ");
 	for (int i = 1; i < argc; ++i) {
+		commandLine.append(L"\"");
 		commandLine.append(argv[i]);
+		commandLine.append(L"\"");
 		commandLine.append(L" ");
 	}
 	executeCommand(commandLine);
