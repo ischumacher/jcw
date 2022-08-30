@@ -2,25 +2,48 @@
 #include <windows.h>
 #include <tchar.h>
 #include <string>
+#include <filesystem>
 
 using namespace std;
-void executeCommand(wstring& commandLine);
+void executeCommand(wstring commandLine);
 
-int wmain(int argc, wchar_t** argv) {
-	wchar_t* cpath = new wchar_t[1024];
-	int exePathSize = GetModuleFileNameW(NULL, cpath, 1024);
+wstring getWorkingDirectory() {
+	wchar_t* dir = new wchar_t[2048];
+	_wgetcwd(dir, 2048);
+	return wstring(dir);
+}
+
+wstring getExecutablePath() {
+	wchar_t* cpath = new wchar_t[2048];
+	int exePathSize = GetModuleFileNameW(NULL, cpath, 2048);
 	wstring path = wstring(cpath, exePathSize);
 	int ind = path.find_last_of('\\');
-	wstring jarDir = path.substr(0, ind);
+	return path.substr(0,ind);
+}
+
+wstring getExecutableName(wchar_t** argv) {
 	wstring cmd(argv[0]);
-	wstring commandLine;
-	ind = cmd.find_last_of('\\');
+	int ind = cmd.find_last_of('\\');
 	++ind;
-	wstring name = cmd.substr(ind, cmd.length() - ind - 4);
+	return cmd.substr(ind, cmd.length() - ind - 4);
+}
+
+wstring getJarFilePath(wstring exePath, wstring exeName) {
+	wstring path = wstring();
+	path.append(exePath);
+	path.append(L"\\");
+	path.append(exeName);
+	return path;
+}
+
+int wmain(int argc, wchar_t** argv) {
+	wstring workingDirectory = getWorkingDirectory();
+	wstring exeName = getExecutableName(argv);
+	wstring exePath = getExecutablePath();
+	wstring jarPath = getJarFilePath(exePath, exeName);
+	wstring commandLine = wstring();
 	commandLine.append(L"java.exe -jar ");
-	commandLine.append(jarDir);
-	commandLine.append(L"\\");
-	commandLine.append(name);
+	commandLine.append(jarPath);
 	commandLine.append(L".jar ");
 	for (int i = 1; i < argc; ++i) {
 		commandLine.append(L"\"");
@@ -32,7 +55,8 @@ int wmain(int argc, wchar_t** argv) {
 	executeCommand(commandLine);
 }
 
-void executeCommand(wstring& commandLine) {
+
+void executeCommand(wstring commandLine) {
 	STARTUPINFO si;
 	PROCESS_INFORMATION pi;
 	ZeroMemory(&si, sizeof(si));
