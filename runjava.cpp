@@ -4,18 +4,21 @@
 #include <string>
 
 using namespace std;
+void executeCommand(wstring& commandLine);
 
-void executeCommand(wstring &commandLine);
-
-int wmain(int argc, wchar_t **argv) {
+int wmain(int argc, wchar_t** argv) {
+	wchar_t* cpath = new wchar_t[1024];
+	int exePathSize = GetModuleFileNameW(NULL, cpath, 1024);
+	wstring path = wstring(cpath, exePathSize);
+	int ind = path.find_last_of('\\');
+	wstring jarDir = path.substr(0, ind);
 	wstring cmd(argv[0]);
 	wstring commandLine;
-	int ind = cmd.find_last_of('\\');
-	wstring path = cmd.substr(0, ind);
+	ind = cmd.find_last_of('\\');
 	++ind;
 	wstring name = cmd.substr(ind, cmd.length() - ind - 4);
 	commandLine.append(L"java.exe -jar ");
-	commandLine.append(path);
+	commandLine.append(jarDir);
 	commandLine.append(L"\\");
 	commandLine.append(name);
 	commandLine.append(L".jar ");
@@ -25,10 +28,11 @@ int wmain(int argc, wchar_t **argv) {
 		commandLine.append(L"\"");
 		commandLine.append(L" ");
 	}
+	wcout << commandLine << endl;
 	executeCommand(commandLine);
 }
 
-void executeCommand(wstring &commandLine) {
+void executeCommand(wstring& commandLine) {
 	STARTUPINFO si;
 	PROCESS_INFORMATION pi;
 	ZeroMemory(&si, sizeof(si));
