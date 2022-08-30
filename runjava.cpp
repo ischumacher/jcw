@@ -7,12 +7,6 @@
 using namespace std;
 void executeCommand(wstring commandLine);
 
-wstring getWorkingDirectory() {
-	wchar_t* dir = new wchar_t[2048];
-	_wgetcwd(dir, 2048);
-	return wstring(dir);
-}
-
 wstring getExecutablePath() {
 	wchar_t* cpath = new wchar_t[2048];
 	int exePathSize = GetModuleFileNameW(NULL, cpath, 2048);
@@ -37,7 +31,6 @@ wstring getJarFilePath(wstring exePath, wstring exeName) {
 }
 
 int wmain(int argc, wchar_t** argv) {
-	wstring workingDirectory = getWorkingDirectory();
 	wstring exeName = getExecutableName(argv);
 	wstring exePath = getExecutablePath();
 	wstring jarPath = getJarFilePath(exePath, exeName);
